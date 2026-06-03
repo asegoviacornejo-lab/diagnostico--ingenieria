@@ -1,30 +1,37 @@
 import streamlit as st
 
-st.title("Diagnostico Academico Inteligente")
+st.title("Calculadora de Horas Autonomas por Asignatura")
 
-st.write("Esta app calcula una estimacion basica de carga academica SCT.")
+st.write("Selecciona una asignatura para estimar sus horas autonomas necesarias.")
 
-valor_sct = st.number_input("Valor de 1 SCT en horas", value=27)
-semanas = st.number_input("Cantidad de semanas del semestre", value=18)
+asignaturas = {
+    "Calculo I": 6,
+    "Algebra I": 6,
+    "Fisica I": 5,
+    "Quimica General": 5,
+    "Introduccion a la Ingenieria": 3,
+    "Programacion": 4
+}
 
-nombre_asignatura = st.text_input("Nombre de la asignatura")
-sct = st.number_input("SCT de la asignatura", value=6)
+valor_sct = 27
+semanas_semestre = 18
+horas_directas_por_semana = 4
 
-horas_disponibles = st.number_input("Horas semanales disponibles fuera de clases", value=20)
+asignatura_seleccionada = st.selectbox(
+    "Selecciona tu asignatura",
+    list(asignaturas.keys())
+)
 
-horas_semestrales = sct * valor_sct
-horas_semanales = horas_semestrales / semanas
-diferencia = horas_disponibles - horas_semanales
+sct = asignaturas[asignatura_seleccionada]
 
-st.subheader("Resultados")
+horas_totales_semestre = sct * valor_sct
+horas_totales_semana = horas_totales_semestre / semanas_semestre
+horas_autonomas_semana = horas_totales_semana - horas_directas_por_semana
 
-st.write("Asignatura:", nombre_asignatura)
-st.write("Horas semestrales:", horas_semestrales)
-st.write("Horas semanales esperadas:", horas_semanales)
+st.subheader("Resultado")
 
-if diferencia < 0:
-    st.error(f"Deficit de {abs(diferencia):.1f} horas semanales")
-elif diferencia > 0:
-    st.success(f"Superavit de {diferencia:.1f} horas semanales")
-else:
-    st.info("Estas en equilibrio")
+st.write("Asignatura seleccionada:", asignatura_seleccionada)
+st.write("SCT:", sct)
+st.write("Horas totales estimadas por semestre:", horas_totales_semestre)
+st.write("Horas totales estimadas por semana:", round(horas_totales_semana, 1))
+st.write("Horas autonomas necesarias por semana:", round(horas_autonomas_semana, 1))
